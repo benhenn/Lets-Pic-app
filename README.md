@@ -1,4 +1,4 @@
-Welcome to the Lets-Pic-app Project
+Welcome to Lets-Pic-app
 ============
 
 Android App for one touch photo notes with reminder and auto delete
