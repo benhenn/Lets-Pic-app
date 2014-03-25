@@ -1,7 +1,7 @@
 Welcome to Lets-Pic-app
 ============
 
-One Touch Photo Notes with Reminder and Auto Delete for Android
+One Touch Photo Note with Reminder and Auto Delete for Android
 
 Status: Mockup
 http://benjaminhenn.de/letspicapp/mockup
