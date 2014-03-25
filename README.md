@@ -10,7 +10,7 @@ Who can help me with this project? I am a freelance cameraman and got no idea of
 
 Why this App? I found it extremely helpful to take pictures from paper notes, things to remember, things to buy and so on. I use to do that with the native photo app from Android. All pictures are saved together in one folder.
 
-The Problem: I cant find the important picture in the mess of all the beauty shots.
+The Problem: I cant find the important pictures in the mess of all the other pictures i took.
 
 The Solution: An app for the important pictures.
 
