@@ -10,9 +10,9 @@ Who can help me with this project? I am a freelance cameraman and got no idea of
 
 Why this App? I found it extremely helpful to take pictures from paper notes, things to remember, things to buy and so on. I use to do that with the native photo app from Android. All pictures are saved together in one folder.
 
-The Problem: I cant find the important picture in the mess of all the beauty shots
+The Problem: I cant find the important picture in the mess of all the beauty shots.
 
-The Solution: An app for the important pictures
+The Solution: An app for the important pictures.
 
 The Functions: Take a photo with just one touch. Like with the native photo app on Android or IOS.
 Than choose to:
@@ -32,7 +32,7 @@ Similar Apps: The Android app: „Fast Photo Notes“ ( https://play.google.com/
 The app: „Meteror“ ( https://itunes.apple.com/us/app/meteor-take-photo-memos/id740977931?mt=8 ) for IOS. Can also auto delete pictures.
 
 Any similar project on GitHub?
-I need help to get started with the code and structure. Who can to help?
+I need help to get started with the code and structure. Who can help?
 
 The Lets-Pic-app Project
 
