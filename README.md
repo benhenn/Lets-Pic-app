@@ -44,7 +44,7 @@ Wer will helfen die Welt besser zu machen? :-)
 Wir brauchen:
 
 - Einen master Plan zur Umsetzung der Projekts (Struktur? Plattform? GitHub?)
-- Englische Redme
+- Englische Readme
 - Code
 
 Zu mir: Ich bin freier Kameramann und habe wenig Ahnung von Open Source Projekten. Nach reichlich Recherche bin ich mir sicher: Die Welt braucht diese App!
