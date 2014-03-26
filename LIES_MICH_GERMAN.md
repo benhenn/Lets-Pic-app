@@ -59,4 +59,4 @@ Produktiv-App für „nützliche Fotos“
 Ben Henn
 Berlin, Germany
 
-post@benjaminhenn.de
+picapp@benjaminhenn.de
