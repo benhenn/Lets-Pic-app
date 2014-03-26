@@ -38,4 +38,4 @@ The Lets-Pic-app Project
 
 Ben Henn Berlin, Germany
 
-post@benjaminhenn.de
+picapp@benjaminhenn.de
