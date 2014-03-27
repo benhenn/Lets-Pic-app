@@ -4,7 +4,7 @@ Welcome to Lets-Pic-app
 One Touch Photo Note with Reminder and Auto Delete for Android
 
 Status: Mockup
-http://benjaminhenn.de/letspicapp/mockup
+http://benjaminhenn.de/letspicapp/mockup/html
 
 Who can help me with this project? I am a freelance cameraman and got no idea of coding. Any help is very much welcome. Thanks!
 
