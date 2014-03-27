@@ -23,7 +23,7 @@ Than choose to:
 
 The pictures are sorted in a clearly arranged gallery. From the gallery you can open, share or delete a picture.
 
-Development: The app will be open source software developed for Android. The app uses the native components from Android. See mockup: http://benjaminhenn.de/letspicapp/mockup
+Development: The app will be open source software developed for Android. The app uses the native components from Android. See mockup: http://benjaminhenn.de/letspicapp/mockup/html
 
 More Ideas: Geo based reminder. For example: If get back home, a picture of my washing machine shows up => to peg out clothes :-)
 
