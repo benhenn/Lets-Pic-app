@@ -4,7 +4,7 @@ Willkommen zu Lets-Pic-app
 Android App für  „nützliche Fotos“
 
 Status: Mockup
-http://benjaminhenn.de/letspicapp/mockup
+http://benjaminhenn.de/letspicapp/mockup/html
 
 Kurzbeschreibung: Produktiv-App für "nützliche Fotos"
 
