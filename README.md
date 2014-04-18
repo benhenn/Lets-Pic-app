@@ -3,10 +3,11 @@ Welcome to Lets-Pic-app
 
 One Touch Photo Note with Reminder and Auto Delete for Android
 
-Status: Mockup
-http://benjaminhenn.de/letspicapp/mockup/html
+Status: Prototype (Thank´s to "tendlich")
 
-Who can help me with this project? I am a freelance cameraman and got no idea of coding. Any help is very much welcome. Thanks!
+See Mockup: http://benjaminhenn.de/letspicapp/mockup/html
+
+Who can help with this project? I am a freelance cameraman and got no idea of coding. Master of coding: "tendlich". Any help is very much welcome. Thanks!
 
 Why this App? I found it extremely helpful to take pictures from paper notes, things to remember, things to buy and so on. I use to do that with the native photo app from Android. All pictures are saved together in one folder.
 
