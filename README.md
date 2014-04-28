@@ -7,6 +7,8 @@ Status: Prototype (Thank´s to "tendlich")
 
 See Mockup: http://benjaminhenn.de/letspicapp/mockup/html
 
+Watch the Video: http://youtu.be/5b4Ce-Z5n4A (so far only in German language)
+
 Who can help with this project? I am a freelance cameraman and got no idea of coding. Master of coding: "tendlich". Any help is very much welcome. Thanks!
 
 Why this App? I found it extremely helpful to take pictures from paper notes, things to remember, things to buy and so on. I use to do that with the native photo app from Android. All pictures are saved together in one folder.
