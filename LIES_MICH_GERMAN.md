@@ -8,6 +8,8 @@ Status: Prototype (Danke an "tendlich")
 Mockup:
 http://benjaminhenn.de/letspicapp/mockup/html
 
+Video: http://youtu.be/5b4Ce-Z5n4A (Auf Deutsch)
+
 Kurzbeschreibung: Produktiv-App für "nützliche Fotos"
 
 Warum diese App? Mit meinem Smartphone mache ich viel schöne Fotos. Zum Beispiel Fotos von meiner Freundin, meinem Auto, meinem Fahrrad und und und. Ich nenne sie "schöne Fotos".
