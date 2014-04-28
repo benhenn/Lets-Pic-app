@@ -7,7 +7,7 @@ Status: Prototype (Thank´s to "tendlich")
 
 See Mockup: http://benjaminhenn.de/letspicapp/mockup/html
 
-Watch the Video: http://youtu.be/5b4Ce-Z5n4A (so far only in German language)
+Watch the Video: http://youtu.be/5b4Ce-Z5n4A (so far in German language  only)
 
 Who can help with this project? I am a freelance cameraman and got no idea of coding. Master of coding: "tendlich". Any help is very much welcome. Thanks!
 
