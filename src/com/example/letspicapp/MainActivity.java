@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
 	private String name;
 	private int mYear, mMonth, mDay, mHour, mMinute;
 	private Calendar alarm = Calendar.getInstance();
+	private boolean fromGallery;
 
 	// /** A safe way to get an instance of the Camera object. */
 	// public static Camera getCameraInstance(){
@@ -81,13 +82,12 @@ public class MainActivity extends Activity {
 		Intent i = getIntent();
 		name = i.getExtras().getString("name");
 		path = i.getExtras().getString("path");
+		fromGallery = i.getExtras().getBoolean("fromGallery");//TODO workaround
 		EditText text = (EditText) findViewById(R.id.editName);
 		text.setText(Persistence.removeImageFileExtension(name));
 		text.setSelection(text.getText().length());
 		ImageView mImageView = (ImageView) findViewById(R.id.thumbnail);
 		mImageView.setImageBitmap(getBitmap(path));
-
-
 	}
 	
 	private void setName(String name){
@@ -119,7 +119,8 @@ public class MainActivity extends Activity {
 	}
 	
 	public void reminder(View v){
-		this.rename();
+		if(!fromGallery) //TODO workaround
+			this.rename();
 		
 		int alarmHour,alarmMinute,alarmYear,alarmMonth,alarmDay;
 		

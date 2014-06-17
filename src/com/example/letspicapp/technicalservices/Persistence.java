@@ -17,7 +17,7 @@ import android.util.Log;
 
 public class Persistence {
 	
-	private final static String TAG = "LetsPicAppDebug";
+	private final static String TAG = "LetsPicAppPersistence";
 	private String standardPath = this.getMediaStorageDir().getPath() + File.separator;
 	
 	
@@ -92,6 +92,7 @@ public class Persistence {
 			return byteBuffer.toByteArray();
 		} catch (FileNotFoundException fnfe) {
 			// TODO Auto-generated catch block
+			System.err.println("Path: " + path);
 			fnfe.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

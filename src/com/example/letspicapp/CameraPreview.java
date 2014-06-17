@@ -1,21 +1,17 @@
 package com.example.letspicapp;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.example.letspicapp.technicalservices.Persistence;
-
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.hardware.Camera;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,12 +19,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.letspicapp.technicalservices.Persistence;
+
 public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	private final static String TAG = "LetsPicAppDebug";
+	private static final int PICK_IMAGE = 1;
 	private Camera mCamera;
 	private SurfaceView surfaceView;
 	private SurfaceHolder surfaceHolder;
 	private Button capture_image;
+	private Button open_gallery;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,17 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 				capture();
 			}
 		});
+		
+		open_gallery = (Button) findViewById(R.id.open_gallery);
+		open_gallery.setOnClickListener(new View.OnClickListener(){
 
+			@Override
+			public void onClick(View v) {
+				select();
+			}
+
+		});
+		
 		surfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(CameraPreview.this);
@@ -106,7 +116,49 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		
 		return mediaFile;
 	}
+	
+	private void select() {
+		Intent intent = new Intent();
+		intent.setType("image/*");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) { 
 
+	        if (resultCode == RESULT_OK) {
+
+	                if (requestCode == PICK_IMAGE) {
+
+	                        File pictureFile = new File(getRealPathFromURI(data.getData()));
+	                        Intent i = new Intent(CameraPreview.this,MainActivity.class);
+	        				i.putExtra("name", pictureFile.getName());
+	        				i.putExtra("path", pictureFile.getAbsolutePath());
+	        				i.putExtra("fromGallery", true);//TODO workaround
+	        				startActivity(i);
+	        				releaseCamera();
+	                }
+	        }
+	}
+
+	// And to convert the image URI to the direct file system path of the image file
+	public String getRealPathFromURI(Uri contentUri) {
+
+	        // can post image
+	        String [] proj={MediaStore.Images.Media.DATA};
+	        Cursor cursor = managedQuery( contentUri,
+	                        proj, // Which columns to return
+	                        null,       // WHERE clause; which rows to return (all rows)
+	                        null,       // WHERE clause selection arguments (none)
+	                        null); // Order-by clause (ascending by name)
+	        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	        cursor.moveToFirst();
+
+	        return cursor.getString(column_index);
+	}
+
+	
 	private void capture() {
 		mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
 
@@ -123,6 +175,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 				Intent i = new Intent(CameraPreview.this,MainActivity.class);
 				i.putExtra("name", pictureFile.getName());
 				i.putExtra("path", pictureFile.getAbsolutePath());
+				i.putExtra("fromGallery", false);
 				startActivity(i);
 				releaseCamera();
 			}
@@ -132,12 +185,12 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		Log.e("Surface Changed", "format   ==   " + format + ",   width  ===  "
-				+ width + ", height   ===    " + height);
+//		Log.e("Surface Changed", "format   ==   " + format + ",   width  ===  "
+//				+ width + ", height   ===    " + height);
 		try {
 			mCamera.setPreviewDisplay(holder);
 			mCamera.startPreview();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
