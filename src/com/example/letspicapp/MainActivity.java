@@ -1,6 +1,7 @@
 package com.example.letspicapp;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Calendar;
 
@@ -80,9 +81,26 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Intent i = getIntent();
-		name = i.getExtras().getString("name");
-		path = i.getExtras().getString("path");
-		fromGallery = i.getExtras().getBoolean("fromGallery");//TODO workaround
+		
+		//share menu
+		if (Intent.ACTION_SEND.equals(i.getAction())) {   
+			Bundle extras = i.getExtras();
+			if (extras.containsKey(Intent.EXTRA_STREAM)) {
+		    Uri uri = (Uri) extras.getParcelable(Intent.EXTRA_STREAM);
+		    File pictureFile = new File(Persistence.getInstance().getRealPathFromURI(uri,this));
+		    
+		    if (pictureFile != null) {
+		    	name = pictureFile.getName();
+		    	path = pictureFile.getAbsolutePath();
+		    	fromGallery = true;
+		    }
+		  }
+		}else{ 
+			name = i.getExtras().getString("name");
+			path = i.getExtras().getString("path");
+			fromGallery = i.getExtras().getBoolean("fromGallery");//TODO workaround
+		}
+		
 		EditText text = (EditText) findViewById(R.id.editName);
 		text.setText(Persistence.removeImageFileExtension(name));
 		text.setSelection(text.getText().length());

@@ -33,6 +33,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.camera_layout);
 		capture_image = (Button) findViewById(R.id.capture_image);
 		capture_image.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +132,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 
 	                if (requestCode == PICK_IMAGE) {
 
-	                        File pictureFile = new File(getRealPathFromURI(data.getData()));
+	                        File pictureFile = new File(Persistence.getInstance().getRealPathFromURI(data.getData(),this));
 	                        Intent i = new Intent(CameraPreview.this,MainActivity.class);
 	        				i.putExtra("name", pictureFile.getName());
 	        				i.putExtra("path", pictureFile.getAbsolutePath());
@@ -141,27 +142,11 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	                }
 	        }
 	}
-
-	// And to convert the image URI to the direct file system path of the image file
-	public String getRealPathFromURI(Uri contentUri) {
-
-	        // can post image
-	        String [] proj={MediaStore.Images.Media.DATA};
-	        Cursor cursor = managedQuery( contentUri,
-	                        proj, // Which columns to return
-	                        null,       // WHERE clause; which rows to return (all rows)
-	                        null,       // WHERE clause selection arguments (none)
-	                        null); // Order-by clause (ascending by name)
-	        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-	        cursor.moveToFirst();
-
-	        return cursor.getString(column_index);
-	}
-
 	
 	private void capture() {
 		mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
 
+			
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
 				mCamera.stopPreview();
