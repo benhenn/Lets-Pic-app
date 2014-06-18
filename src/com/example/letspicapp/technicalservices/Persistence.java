@@ -7,17 +7,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 public class Persistence {
 	
-	private final static String TAG = "LetsPicAppDebug";
+	private final static String TAG = "LetsPicAppPersistence";
 	private String standardPath = this.getMediaStorageDir().getPath() + File.separator;
 	
 	
@@ -92,6 +95,7 @@ public class Persistence {
 			return byteBuffer.toByteArray();
 		} catch (FileNotFoundException fnfe) {
 			// TODO Auto-generated catch block
+			System.err.println("Path: " + path);
 			fnfe.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -117,6 +121,23 @@ public class Persistence {
 		}
 		return mediaStorageDir;
 	}
+	
+	
+	public String getRealPathFromURI(Uri contentUri, Activity a) {
+
+        // can post image
+        String [] proj={MediaStore.Images.Media.DATA};
+        Cursor cursor = a.managedQuery( contentUri,
+                        proj, // Which columns to return
+                        null,       // WHERE clause; which rows to return (all rows)
+                        null,       // WHERE clause selection arguments (none)
+                        null); // Order-by clause (ascending by name)
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+
+        return cursor.getString(column_index);
+	}
+
 	
 	//singleton
 	private static Persistence instance = null;
