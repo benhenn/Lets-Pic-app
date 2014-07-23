@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.technicalservices.Persistence;
 
 public class MainActivity extends Activity {
@@ -38,8 +39,10 @@ public class MainActivity extends Activity {
 	private String path;
 	private String name;
 	private int mYear, mMonth, mDay, mHour, mMinute;
-	private Calendar alarm = Calendar.getInstance();
+//	private Calendar alarm = Calendar.getInstance();
 	private boolean fromGallery;
+	
+	private Alarm alarm;
 
 	// /** A safe way to get an instance of the Camera object. */
 	// public static Camera getCameraInstance(){
@@ -125,23 +128,23 @@ public class MainActivity extends Activity {
 		this.setPath(newPath);
 	}
 	
-	private void setAlarmTime(int hour,int minute){
-		alarm.set(Calendar.HOUR_OF_DAY, hour);
-		alarm.set(Calendar.MINUTE, minute);
-	}
-	
-	private void setAlarmDate(int year,int month, int day){
-		alarm.set(Calendar.YEAR, year);
-		alarm.set(Calendar.MONTH, month);
-		alarm.set(Calendar.DAY_OF_MONTH, day);
-	}
+//	private void setAlarmTime(int hour,int minute){
+//		alarm.set(Calendar.HOUR_OF_DAY, hour);
+//		alarm.set(Calendar.MINUTE, minute);
+//	}
+//	
+//	private void setAlarmDate(int year,int month, int day){
+//		alarm.set(Calendar.YEAR, year);
+//		alarm.set(Calendar.MONTH, month);
+//		alarm.set(Calendar.DAY_OF_MONTH, day);
+//	}
 	
 	public void reminder(View v){
 		if(!fromGallery) //TODO workaround
 			this.rename();
 		
-		int alarmHour,alarmMinute,alarmYear,alarmMonth,alarmDay;
-		
+//		int alarmHour,alarmMinute,alarmYear,alarmMonth,alarmDay;
+		alarm = new Alarm();
 		final Calendar c = Calendar.getInstance();
         
         final TimePickerDialog tpd = new TimePickerDialog(this,
@@ -150,8 +153,8 @@ public class MainActivity extends Activity {
         	@Override
         	public void onTimeSet(TimePicker view, int hourOfDay,
         			int minute) {
-        		setAlarmTime(hourOfDay, minute);
-        		scheduleAlarm();
+        		alarm.setAlarmTime(hourOfDay, minute);
+//        		scheduleAlarm();
         	}
         }, c.get(Calendar.HOUR_OF_DAY),  c.get(Calendar.MINUTE), true);
         
@@ -159,13 +162,14 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onDateSet(DatePicker view,  int year, int monthOfYear, int dayOfMonth) {
-				setAlarmDate(year, monthOfYear, dayOfMonth);
+				alarm.setAlarmDate(year, monthOfYear, dayOfMonth);
 				tpd.show();
 			}
         	
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         
         dpd.show();
+        scheduleAlarm();
 	}
 	
 	public void deletePicture(View v){
