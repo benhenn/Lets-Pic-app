@@ -14,15 +14,15 @@ public class Alarm {
 	
 	
 	public Alarm(Calendar date, String imagePath){
-		this.time = date.getTimeInMillis();
+		this.alarm = date;
 		this.imagePath = imagePath;
 	}
-	
-	public Alarm(long time, String imagePath){
-		this.time = time;
-		this.imagePath = imagePath;
-	}
-	
+//	
+//	public Alarm(long time, String imagePath){
+//		this.time = time;
+//		this.imagePath = imagePath;
+//	}
+//	
 	public void setAlarmTime(int hour,int minute){
 		alarm.set(Calendar.HOUR_OF_DAY, hour);
 		alarm.set(Calendar.MINUTE, minute);
@@ -39,13 +39,12 @@ public class Alarm {
 	}
 	
 	public long getTime() {
-		return time;
+		return alarm.getTimeInMillis();
+//		return time;
 	}
 	
 	public String getImagePath() {
 		return imagePath;
-	}
-	
-	
+	}	
 	
 }

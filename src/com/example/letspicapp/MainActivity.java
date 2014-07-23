@@ -128,48 +128,37 @@ public class MainActivity extends Activity {
 		this.setPath(newPath);
 	}
 	
-//	private void setAlarmTime(int hour,int minute){
-//		alarm.set(Calendar.HOUR_OF_DAY, hour);
-//		alarm.set(Calendar.MINUTE, minute);
-//	}
-//	
-//	private void setAlarmDate(int year,int month, int day){
-//		alarm.set(Calendar.YEAR, year);
-//		alarm.set(Calendar.MONTH, month);
-//		alarm.set(Calendar.DAY_OF_MONTH, day);
-//	}
+	private DatePickerDialog dateTimePicker(final boolean reminder){
+		final Calendar c = Calendar.getInstance();
+		 final TimePickerDialog tpd = new TimePickerDialog(this,
+	        		new TimePickerDialog.OnTimeSetListener() {
+	        	
+	        	@Override
+	        	public void onTimeSet(TimePicker view, int hourOfDay,
+	        			int minute) {
+	        		alarm.setAlarmTime(hourOfDay, minute);
+	        		if(reminder)
+	        			scheduleAlarm();
+	        	}
+	        }, c.get(Calendar.HOUR_OF_DAY),  c.get(Calendar.MINUTE), true);
+	        
+	        final DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener(){
+
+				@Override
+				public void onDateSet(DatePicker view,  int year, int monthOfYear, int dayOfMonth) {
+					alarm.setAlarmDate(year, monthOfYear, dayOfMonth);
+					tpd.show();
+				}
+	        	
+	        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+	        return dpd;
+	}
 	
 	public void reminder(View v){
 		if(!fromGallery) //TODO workaround
 			this.rename();
-		
-//		int alarmHour,alarmMinute,alarmYear,alarmMonth,alarmDay;
 		alarm = new Alarm();
-		final Calendar c = Calendar.getInstance();
-        
-        final TimePickerDialog tpd = new TimePickerDialog(this,
-        		new TimePickerDialog.OnTimeSetListener() {
-        	
-        	@Override
-        	public void onTimeSet(TimePicker view, int hourOfDay,
-        			int minute) {
-        		alarm.setAlarmTime(hourOfDay, minute);
-//        		scheduleAlarm();
-        	}
-        }, c.get(Calendar.HOUR_OF_DAY),  c.get(Calendar.MINUTE), true);
-        
-        final DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener(){
-
-			@Override
-			public void onDateSet(DatePicker view,  int year, int monthOfYear, int dayOfMonth) {
-				alarm.setAlarmDate(year, monthOfYear, dayOfMonth);
-				tpd.show();
-			}
-        	
-        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-        
-        dpd.show();
-        scheduleAlarm();
+        dateTimePicker(true).show();
 	}
 	
 	public void deletePicture(View v){
@@ -180,7 +169,6 @@ public class MainActivity extends Activity {
 	
 	public void scheduleAlarm() {
 
-		Long time = alarm.getTimeInMillis();
 		Intent intentAlarm = new Intent(this, AlarmReciever.class);
 		Log.d("LetsPicAppDebug", "New Path: " + path);
 		intentAlarm.putExtra("path", path);
@@ -189,7 +177,7 @@ public class MainActivity extends Activity {
 		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 		// set the alarm for particular time
-		alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent
+		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), PendingIntent
 				.getBroadcast(this, 0, intentAlarm,
 						PendingIntent.FLAG_UPDATE_CURRENT));
 		
