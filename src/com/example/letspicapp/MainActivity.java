@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
 	private int mYear, mMonth, mDay, mHour, mMinute;
 //	private Calendar alarm = Calendar.getInstance();
 	private boolean fromGallery;
-	
 	private Alarm alarm;
 
 	// /** A safe way to get an instance of the Camera object. */

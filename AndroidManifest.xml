@@ -63,6 +63,10 @@
             android:name="com.example.letspicapp.ImageReminder"
             android:label="@string/title_activity_image_reminder" >
         </activity>
+        <activity
+            android:name="com.example.letspicapp.views.ReminderOverview"
+            android:label="@string/title_activity_reminder_overview" >
+        </activity>
     </application>
 
 </manifest>

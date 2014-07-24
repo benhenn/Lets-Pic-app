@@ -19,7 +19,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.letspicapp.db.ReminderDataSource;
 import com.example.letspicapp.technicalservices.Persistence;
+import com.example.letspicapp.views.ReminderOverview;
 
 public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	private final static String TAG = "LetsPicAppDebug";
@@ -27,8 +29,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	private Camera mCamera;
 	private SurfaceView surfaceView;
 	private SurfaceHolder surfaceHolder;
-	private Button capture_image;
-	private Button open_gallery;
+	private Button capture_image,open_gallery,reminderList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,8 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			@Override
 			public void onClick(View v) {
 				capture();
+//				//TODO test purpose
+//				test();
 			}
 		});
 		
@@ -50,6 +53,16 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			@Override
 			public void onClick(View v) {
 				select();
+			}
+
+		});
+		
+		reminderList = (Button) findViewById(R.id.reminder);
+		reminderList.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				openReminderList();
 			}
 
 		});
@@ -123,6 +136,11 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+	}
+	
+	private void openReminderList(){
+		Intent i = new Intent(this, ReminderOverview.class);
+		startActivity(i);
 	}
 	
 	@Override

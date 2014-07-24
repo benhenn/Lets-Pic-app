@@ -17,12 +17,12 @@ public class Alarm {
 		this.alarm = date;
 		this.imagePath = imagePath;
 	}
-//	
-//	public Alarm(long time, String imagePath){
-//		this.time = time;
-//		this.imagePath = imagePath;
-//	}
-//	
+	
+	public Alarm(long time, String imagePath){
+		this.time = time;
+		this.imagePath = imagePath;
+	}
+	
 	public void setAlarmTime(int hour,int minute){
 		alarm.set(Calendar.HOUR_OF_DAY, hour);
 		alarm.set(Calendar.MINUTE, minute);
@@ -46,5 +46,11 @@ public class Alarm {
 	public String getImagePath() {
 		return imagePath;
 	}	
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return imagePath + " Time: " + alarm.get(Calendar.DAY_OF_MONTH);
+	}
 	
 }
