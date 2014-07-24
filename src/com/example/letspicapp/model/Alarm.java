@@ -52,5 +52,11 @@ public class Alarm {
 		// TODO Auto-generated method stub
 		return imagePath + " Time: " + alarm.get(Calendar.DAY_OF_MONTH);
 	}
+
+
+	public void setId(long id) {
+		if(this.id == 0)
+			this.id = id;
+	}
 	
 }

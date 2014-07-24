@@ -42,8 +42,6 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			@Override
 			public void onClick(View v) {
 				capture();
-//				//TODO test purpose
-//				test();
 			}
 		});
 		

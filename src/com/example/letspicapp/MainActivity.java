@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.letspicapp.db.ReminderDataSource;
 import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.technicalservices.Persistence;
 
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
 //	private Calendar alarm = Calendar.getInstance();
 	private boolean fromGallery;
 	private Alarm alarm;
+
 
 	// /** A safe way to get an instance of the Camera object. */
 	// public static Camera getCameraInstance(){
@@ -82,6 +84,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		Intent i = getIntent();
 		
 		//share menu
@@ -179,6 +182,11 @@ public class MainActivity extends Activity {
 		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), PendingIntent
 				.getBroadcast(this, 0, intentAlarm,
 						PendingIntent.FLAG_UPDATE_CURRENT));
+		
+		ReminderDataSource dataSource = new ReminderDataSource(this);
+		dataSource.open();
+		dataSource.createReminder(alarm);
+		dataSource.close();
 		
 		Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
 				.show();
