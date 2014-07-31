@@ -74,4 +74,15 @@ public class ReminderDataSource {
 		 return alarms;
 	}
 
+	 public int updateAlarm(Alarm alarm){
+		 ContentValues values = new ContentValues();
+		 values.put(DatabaseHandler.COLUM_PATH, alarm.getId());
+		 values.put(DatabaseHandler.COLUMN_DATE, alarm.getTime());
+		
+		 database.update(DatabaseHandler.TABLE_REMINDER,
+				 values, DatabaseHandler.KEY_ID + " = " + alarm.getId(), null);
+		 
+		 return  1;
+		 
+	 }
 }

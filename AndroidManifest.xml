@@ -60,7 +60,7 @@
         </receiver>
 
         <activity
-            android:name="com.example.letspicapp.ImageReminder"
+            android:name="com.example.letspicapp.views.ImageReminder"
             android:label="@string/title_activity_image_reminder" >
         </activity>
         <activity

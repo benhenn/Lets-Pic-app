@@ -170,10 +170,17 @@ public class MainActivity extends Activity {
 	}
 	
 	public void scheduleAlarm() {
+		
+		//save it to the db
+		ReminderDataSource dataSource = new ReminderDataSource(this);
+		dataSource.open();
+		dataSource.createReminder(alarm);
+		dataSource.close();
 
+		//create the intent for the alarm later
 		Intent intentAlarm = new Intent(this, AlarmReciever.class);
-		Log.d("LetsPicAppDebug", "New Path: " + path);
 		intentAlarm.putExtra("path", path);
+		intentAlarm.putExtra("id", alarm.getId());
 
 		// create the object
 		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -182,12 +189,7 @@ public class MainActivity extends Activity {
 		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), PendingIntent
 				.getBroadcast(this, 0, intentAlarm,
 						PendingIntent.FLAG_UPDATE_CURRENT));
-		
-		ReminderDataSource dataSource = new ReminderDataSource(this);
-		dataSource.open();
-		dataSource.createReminder(alarm);
-		dataSource.close();
-		
+
 		Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
 				.show();
 	}

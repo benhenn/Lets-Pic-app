@@ -1,5 +1,7 @@
 package com.example.letspicapp;
 
+import com.example.letspicapp.views.ImageReminder;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,17 +13,20 @@ import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 
 public class AlarmReciever extends BroadcastReceiver {
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		
+		//build the notification
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				context).setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle("LetsPicApp")
 				.setContentText("Click me")
 				.setDefaults(Notification.DEFAULT_ALL);
+		
+		//forward intent
 		Intent resultIntent = new Intent(context, ImageReminder.class);
-		resultIntent.putExtra("path", intent.getExtras().getString("path"));
+		resultIntent.putExtras(intent);
 
 		// Because clicking the notification opens a new ("special") activity,
 		// there's

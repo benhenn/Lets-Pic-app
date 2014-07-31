@@ -6,26 +6,26 @@
     tools:context=".ReminderOverview" >
 
     <RadioGroup
-		android:id="@+id/displayReminders"  
+        android:id="@+id/displayReminders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:checkedButton="@+id/displayAllReminders"
         android:orientation="horizontal" >
 
         <RadioButton
-            android:onClick="test"
             android:id="@+id/displayAllReminders"
+            android:onClick="test"
             android:text="All" />
 
         <RadioButton
-            android:onClick="test"
             android:id="@+id/displayAlarmReminders"
+            android:onClick="test"
             android:text="Alarm" />
 
         <RadioButton
-            android:onClick="test"
             android:id="@+id/displayDeletionReminders"
+            android:onClick="test"
             android:text="Deletion" />
-        
     </RadioGroup>
 
     <ListView
