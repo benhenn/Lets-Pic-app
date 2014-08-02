@@ -6,11 +6,8 @@ import java.io.FileInputStream;
 import java.util.Calendar;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,8 +22,8 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.letspicapp.db.ReminderDataSource;
 import com.example.letspicapp.model.Alarm;
+import com.example.letspicapp.reminder.ReminderHandler;
 import com.example.letspicapp.technicalservices.Persistence;
 
 public class MainActivity extends Activity {
@@ -171,26 +168,14 @@ public class MainActivity extends Activity {
 	
 	public void scheduleAlarm() {
 		
-		//save it to the db
-		ReminderDataSource dataSource = new ReminderDataSource(this);
-		dataSource.open();
-		dataSource.createReminder(alarm);
-		dataSource.close();
+		alarm.setPath(path);
+		boolean alarmSet;
+		alarmSet = ReminderHandler.getInstance().scheduleAlarm(alarm, this);
+		
+		if(alarmSet){
+			Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
+			.show();
+		}
 
-		//create the intent for the alarm later
-		Intent intentAlarm = new Intent(this, AlarmReciever.class);
-		intentAlarm.putExtra("path", path);
-		intentAlarm.putExtra("id", alarm.getId());
-
-		// create the object
-		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-		// set the alarm for particular time
-		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), PendingIntent
-				.getBroadcast(this, 0, intentAlarm,
-						PendingIntent.FLAG_UPDATE_CURRENT));
-
-		Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
-				.show();
 	}
 }

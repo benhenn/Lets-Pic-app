@@ -4,14 +4,18 @@ import java.io.ByteArrayOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.letspicapp.R;
+import com.example.letspicapp.model.Alarm;
+import com.example.letspicapp.reminder.ReminderHandler;
 import com.example.letspicapp.technicalservices.Persistence;
 
 /**
@@ -24,14 +28,18 @@ import com.example.letspicapp.technicalservices.Persistence;
  */
 public class ImageReminder extends Activity {
 
+	private Alarm alarm;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_image_reminder);
 		
-		//get the intent and build a new 
+		alarm = new Alarm(getIntent().getExtras());
+		
+		setContentView(R.layout.activity_image_reminder);		 
+		
 		ImageView iV = (ImageView) findViewById(R.id.imageView42);
-		iV.setImageBitmap(getBitmap(getIntent().getExtras().getString("path")));
+		iV.setImageBitmap(getBitmap(alarm.getImagePath()));
 	}
 
 	public Bitmap getBitmap(String path) {
@@ -63,10 +71,13 @@ public class ImageReminder extends Activity {
 	}
 	
 	public void snooze(View view){
-		//TODO 
-		/*
-		 * reschedule alarm for 5 mins or sth like that
-		 */
+		alarm.setTime(alarm.getTime() + (5 * 60 * 1000));
+		boolean alarmSet; 
+		alarmSet = ReminderHandler.getInstance().scheduleAlarm(alarm, this);
+		if(alarmSet){
+			Toast.makeText(this, "Snoozed for 5 minutes", Toast.LENGTH_LONG)
+			.show();
+		}
 	}
 	
 	//next screen / pop-up
