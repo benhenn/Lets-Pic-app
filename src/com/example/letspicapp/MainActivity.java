@@ -92,22 +92,22 @@ public class MainActivity extends Activity {
 		    File pictureFile = new File(Persistence.getInstance().getRealPathFromURI(uri,this));
 		    
 		    if (pictureFile != null) {
-		    	name = pictureFile.getName();
-		    	path = pictureFile.getAbsolutePath();
+		    	alarm.setName(pictureFile.getName());
+		    	alarm.setPath(pictureFile.getAbsolutePath());
 		    	fromGallery = true;
 		    }
 		  }
 		}else{ 
-			name = i.getExtras().getString("name");
-			path = i.getExtras().getString("path");
+			alarm.setName(i.getExtras().getString("name"));
+			alarm.setPath(i.getExtras().getString("path"));
 			fromGallery = i.getExtras().getBoolean("fromGallery");//TODO workaround
 		}
 		
 		EditText text = (EditText) findViewById(R.id.editName);
-		text.setText(Persistence.removeImageFileExtension(name));
+		text.setText(Persistence.removeImageFileExtension(alarm.getName()));
 		text.setSelection(text.getText().length());
 		ImageView mImageView = (ImageView) findViewById(R.id.thumbnail);
-		mImageView.setImageBitmap(getBitmap(path));
+		mImageView.setImageBitmap(getBitmap(alarm.getImagePath()));
 	}
 	
 	private void setName(String name){
@@ -122,20 +122,23 @@ public class MainActivity extends Activity {
 		EditText editText = (EditText) findViewById(R.id.editName);
 		newName = editText.getText().toString();
 		Log.d("LetsPicAppDebug", "EditText: " + newName);
-		newPath = Persistence.getInstance().renameImage(this.getApplicationContext(),name, newName);
-		this.setName(newName);
-		this.setPath(newPath);
+		newPath = Persistence.getInstance().renameImage(this.getApplicationContext(),alarm.getName(), newName);
+		alarm.setName(newName);
+		alarm.setPath(newPath);
 	}
 	
 	private DatePickerDialog dateTimePicker(final boolean reminder){
 		final Calendar c = Calendar.getInstance();
-		 final TimePickerDialog tpd = new TimePickerDialog(this,
+		final Calendar time = Calendar.getInstance();
+		
+		final TimePickerDialog tpd = new TimePickerDialog(this,
 	        		new TimePickerDialog.OnTimeSetListener() {
 	        	
 	        	@Override
 	        	public void onTimeSet(TimePicker view, int hourOfDay,
 	        			int minute) {
-	        		alarm.setAlarmTime(hourOfDay, minute);
+	        		time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+	        		time.set(Calendar.MINUTE, minute);
 	        		if(reminder)
 	        			scheduleAlarm();
 	        	}
@@ -145,11 +148,15 @@ public class MainActivity extends Activity {
 
 				@Override
 				public void onDateSet(DatePicker view,  int year, int monthOfYear, int dayOfMonth) {
-					alarm.setAlarmDate(year, monthOfYear, dayOfMonth);
+					time.set(Calendar.YEAR, year);
+					time.set(Calendar.MONTH, monthOfYear);
+					time.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 					tpd.show();
 				}
 	        	
 	        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+	      
+	        alarm.setTime(time);
 	        return dpd;
 	}
 	
@@ -162,13 +169,11 @@ public class MainActivity extends Activity {
 	
 	public void deletePicture(View v){
 		this.rename();
-		boolean t = Persistence.getInstance().deleteImage(this.getApplicationContext(), this.name);
+		boolean t = Persistence.getInstance().deleteImage(this.getApplicationContext(), alarm.getName());
 		Log.d("LetsPicAppDebug", "Deletion: " + t);
 	}
 	
-	public void scheduleAlarm() {
-		
-		alarm.setPath(path);
+	public void scheduleAlarm() {		
 		boolean alarmSet;
 		alarmSet = ReminderHandler.getInstance().scheduleAlarm(alarm, this);
 		

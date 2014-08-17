@@ -13,14 +13,33 @@ import com.example.letspicapp.model.Alarm;
 public class ReminderHandler {
 
 	
+	public boolean snooze(Alarm alarm, Context context) {
+		long time = alarm.getTime();
+		time += 9 * 60 * 1000;
+		alarm.setTime(time);
+		
+		//update it in the db no update
+//		ReminderDataSource dataSource = new ReminderDataSource(context);
+//		dataSource.open();
+//		dataSource.updateReminder(alarm);
+//		dataSource.close();
+//		
+		return setAlarm(alarm, context);
+	}
 	
-	public boolean scheduleAlarm(Alarm alarm, Context context){
+	public boolean scheduleAlarm(Alarm alarm,Context context){
 
 		//save it to the db
 		ReminderDataSource dataSource = new ReminderDataSource(context);
 		dataSource.open();
 		dataSource.createReminder(alarm);
 		dataSource.close();
+		
+		return setAlarm(alarm,context);
+	}
+	
+	private boolean setAlarm(Alarm alarm, Context context){
+
 
 		//create the intent for the alarm later and put the variables in the intent
 		Intent intentAlarm = new Intent(context, AlarmReciever.class);

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,6 +42,20 @@ public class ImageReminder extends Activity {
 		
 		ImageView iV = (ImageView) findViewById(R.id.imageView42);
 		iV.setImageBitmap(getBitmap(alarm.getImagePath()));
+		
+		Button remindMeOn = (Button) findViewById(R.id.remindMeOn);
+		remindMeOn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				
+			}
+		});
+	}
+	
+	public void onClick(View v){
+		
 	}
 
 	public Bitmap getBitmap(String path) {
@@ -71,11 +87,10 @@ public class ImageReminder extends Activity {
 	}
 	
 	public void snooze(View view){
-		alarm.setTime(alarm.getTime() + (5 * 60 * 1000));
 		boolean alarmSet; 
-		alarmSet = ReminderHandler.getInstance().scheduleAlarm(alarm, this);
+		alarmSet = ReminderHandler.getInstance().snooze(alarm, this);
 		if(alarmSet){
-			Toast.makeText(this, "Snoozed for 5 minutes", Toast.LENGTH_LONG)
+			Toast.makeText(this, "Snoozed for 9 minutes", Toast.LENGTH_LONG)
 			.show();
 		}
 	}
