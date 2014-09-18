@@ -42,12 +42,12 @@ public class AlarmReciever extends BroadcastReceiver {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		// Builds the notification and issues it.
 		mNotifyMgr.notify(mNotificationId, mBuilder.build());
-		WakeLock screenOn = ((PowerManager) context
-				.getSystemService(Context.POWER_SERVICE)).newWakeLock(
-				PowerManager.SCREEN_BRIGHT_WAKE_LOCK
-						| PowerManager.ACQUIRE_CAUSES_WAKEUP, "example");
-		screenOn.acquire();
-		// TODO Auto-generated method stub
+//		WakeLock screenOn = ((PowerManager) context
+//				.getSystemService(Context.POWER_SERVICE)).newWakeLock(
+//				PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+//						| PowerManager.ACQUIRE_CAUSES_WAKEUP, "example");
+//		screenOn.acquire();
+//		// TODO Auto-generated method stub
 		// long id = intent.getLongExtra("id", 0);
 		// // String msg = intent.getStringExtra("msg");
 		// String msg = "TestMsg!";

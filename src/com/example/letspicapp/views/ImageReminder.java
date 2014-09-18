@@ -7,18 +7,20 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.letspicapp.CameraPreview;
 import com.example.letspicapp.R;
 import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.reminder.ReminderHandler;
 import com.example.letspicapp.technicalservices.Persistence;
+
 
 /**
  * 
@@ -44,14 +46,14 @@ public class ImageReminder extends Activity {
 		iV.setImageBitmap(getBitmap(alarm.getImagePath()));
 		
 		Button remindMeOn = (Button) findViewById(R.id.remindMeOn);
-		remindMeOn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				
-			}
-		});
+//		remindMeOn.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				
+//				
+//			}
+//		});
 	}
 	
 	public void onClick(View v){
@@ -112,6 +114,14 @@ public class ImageReminder extends Activity {
 		// 3. Get the AlertDialog from create()
 		AlertDialog dialog = builder.create();
 		dialog.show();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_MENU){
+			startActivity(new Intent(this, CameraPreview.class));
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 }

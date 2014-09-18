@@ -9,6 +9,7 @@ public class Alarm {
 	public final static String ID = "id";
 	public final static String REMINDER_TIME = "time";
 	public final static String IMAGE_PATH = "path";
+	public final static String NAME = "name";
 	
 	private long id;
 	private long time;
@@ -21,20 +22,22 @@ public class Alarm {
 	}
 	
 	
-	public Alarm(Calendar date, String imagePath){
+	public Alarm(Calendar date, String imagePath, String name){
 		this.time = date.getTimeInMillis();
 		this.imagePath = imagePath;
 	}
 	
-	public Alarm(long time, String imagePath){
+	public Alarm(long time, String imagePath, String name){
 		this.time = time;
 		this.imagePath = imagePath;
+		this.name = name;
 	}
 	
 	public Alarm(Bundle extras) {
 		this.id = extras.getLong(ID);
 		this.time = extras.getLong(REMINDER_TIME);
 		this.imagePath = extras.getString(IMAGE_PATH);
+		this.name = extras.getString(NAME);
 	}
 
 //	public void setAlarmTime(int hour,int minute){
@@ -110,6 +113,7 @@ public class Alarm {
 		bundle.putLong(ID, id);
 		bundle.putLong(REMINDER_TIME, time);
 		bundle.putString(IMAGE_PATH, imagePath);
+		bundle.putString(NAME, name);
 		return bundle;
 	}
 

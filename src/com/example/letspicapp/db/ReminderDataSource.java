@@ -19,7 +19,7 @@ public class ReminderDataSource {
 	
 	private SQLiteDatabase database;
 	private DatabaseHandler dbHandler;
-	private String[] allColumns = { /* DatabaseHandler.KEY_ID,*/ DatabaseHandler.COLUMN_DATE, DatabaseHandler.COLUM_PATH,  DatabaseHandler.COLUMN_IS_ALARM };
+	private String[] allColumns = { /* DatabaseHandler.KEY_ID,*/ DatabaseHandler.COLUMN_DATE, DatabaseHandler.COLUM_PATH, DatabaseHandler.COLUM_NAME,  DatabaseHandler.COLUMN_IS_ALARM };
 	
 	 public ReminderDataSource(Context context) {
 		 dbHandler = new DatabaseHandler(context);
@@ -37,6 +37,7 @@ public class ReminderDataSource {
 		 ContentValues values = new ContentValues();
 		 values.put(DatabaseHandler.COLUMN_DATE, alarm.getTime());
 		 values.put(DatabaseHandler.COLUM_PATH, alarm.getImagePath());
+		 values.put(DatabaseHandler.COLUM_NAME, alarm.getName());
 		 values.put(DatabaseHandler.COLUMN_IS_ALARM, 1);
 		 long id = database.insert(DatabaseHandler.TABLE_REMINDER, null, values);
 		 alarm.setId(id);
@@ -49,7 +50,7 @@ public class ReminderDataSource {
 
 		 cursor.moveToFirst();
 		 while (!cursor.isAfterLast()) {
-			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getString(1));
+			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getString(1),cursor.getString(2));
 			 alarms.add(alarm);
 			 cursor.moveToNext();
 		 }
@@ -66,7 +67,7 @@ public class ReminderDataSource {
 
 		 cursor.moveToFirst();
 		 while (!cursor.isAfterLast()) {
-			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getString(1));
+			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getString(1),cursor.getString(2));
 			 alarms.add(alarm);
 			 cursor.moveToNext();
 		 }

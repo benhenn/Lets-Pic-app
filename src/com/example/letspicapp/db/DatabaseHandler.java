@@ -9,7 +9,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	// Database Name
 	private static final String DATABASE_NAME = "letspic";
@@ -21,6 +21,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	static final String KEY_ID = "id";
 	static final String COLUMN_DATE = "date";
 	static final String COLUM_PATH = "path";
+	static final String COLUM_NAME = "name";
 	static final String COLUMN_IS_ALARM = "is_alarm";
 
 	public DatabaseHandler(Context context) {
@@ -31,7 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_REMINDER + "("
 				+ KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_DATE + " TEXT, "
-				+ COLUM_PATH + " TEXT, " + COLUMN_IS_ALARM + " INTEGER "+ ");";
+				+ COLUM_PATH + " TEXT, " + COLUM_NAME + " TEXT, " + COLUMN_IS_ALARM + " INTEGER "+ ");";
 		db.execSQL(CREATE_CONTACTS_TABLE);
 	}
 

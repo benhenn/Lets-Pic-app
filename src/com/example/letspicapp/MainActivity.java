@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		Intent i = getIntent();
+		alarm = new Alarm();
 		
 		//share menu
 		if (Intent.ACTION_SEND.equals(i.getAction())) {   
@@ -97,6 +98,8 @@ public class MainActivity extends Activity {
 		    	fromGallery = true;
 		    }
 		  }
+//		}else if(i.getBooleanExtra("Overview", false)){
+			
 		}else{ 
 			alarm.setName(i.getExtras().getString("name"));
 			alarm.setPath(i.getExtras().getString("path"));
@@ -163,7 +166,7 @@ public class MainActivity extends Activity {
 	public void reminder(View v){
 		if(!fromGallery) //TODO workaround
 			this.rename();
-		alarm = new Alarm();
+//		alarm = new Alarm();
         dateTimePicker(true).show();
 	}
 	
