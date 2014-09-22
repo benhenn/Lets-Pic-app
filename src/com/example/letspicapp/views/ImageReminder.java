@@ -1,11 +1,13 @@
 package com.example.letspicapp.views;
 
-import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,7 +21,6 @@ import com.example.letspicapp.CameraPreview;
 import com.example.letspicapp.R;
 import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.reminder.ReminderHandler;
-import com.example.letspicapp.technicalservices.Persistence;
 
 
 /**
@@ -63,22 +64,25 @@ public class ImageReminder extends Activity {
 	public Bitmap getBitmap(String path) {
 		Bitmap imgthumBitmap = null;
 		try {
+		       //Decode image size
+	        BitmapFactory.Options o = new BitmapFactory.Options();
+	        o.inJustDecodeBounds = true;
+	        BitmapFactory.decodeStream(new FileInputStream(path),null,o);
 
-			final int THUMBNAIL_SIZE = 400;
+	        //The new size we want to scale to
+	        final int REQUIRED_SIZE=400;
 
-			imgthumBitmap = Persistence.getInstance().getImage(path);
+	        //Find the correct scale value. It should be the power of 2.
+	        int scale=1;
+	        while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+	            scale*=2;
 
-			imgthumBitmap = Bitmap.createScaledBitmap(imgthumBitmap,
-					THUMBNAIL_SIZE, THUMBNAIL_SIZE, false);
-
-			ByteArrayOutputStream bytearroutstream = new ByteArrayOutputStream();
-			imgthumBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
-					bytearroutstream);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return imgthumBitmap;
+	        //Decode with inSampleSize
+	        BitmapFactory.Options o2 = new BitmapFactory.Options();
+	        o2.inSampleSize=scale;
+	        return BitmapFactory.decodeStream(new FileInputStream(path), null, o2);
+	    } catch (FileNotFoundException e) {}
+	    return null;
 	}
 
 	@Override

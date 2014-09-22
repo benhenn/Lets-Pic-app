@@ -1,5 +1,7 @@
-package com.example.letspicapp;
+package com.example.letspicapp.receiver;
 
+import com.example.letspicapp.R;
+import com.example.letspicapp.R.drawable;
 import com.example.letspicapp.views.ImageReminder;
 
 import android.app.Notification;

@@ -1,14 +1,17 @@
 package com.example.letspicapp.reminder;
 
+import java.util.Calendar;
+import java.util.List;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.example.letspicapp.AlarmReciever;
 import com.example.letspicapp.db.ReminderDataSource;
 import com.example.letspicapp.model.Alarm;
+import com.example.letspicapp.receiver.AlarmReciever;
 
 public class ReminderHandler {
 
@@ -36,6 +39,20 @@ public class ReminderHandler {
 		dataSource.close();
 		
 		return setAlarm(alarm,context);
+	}
+	
+	public void setAllRemindersAfterReboot(Context context) {
+		
+		ReminderDataSource dataSource = new ReminderDataSource(context);
+		dataSource.open();
+		List<Alarm> alarms = dataSource.getAllReminders();
+		long time = Calendar.getInstance().getTimeInMillis();
+		for (Alarm alarm : alarms) {
+			if(time < alarm.getTime())
+				setAlarm(alarm, context);
+		}
+		dataSource.close();
+
 	}
 	
 	private boolean setAlarm(Alarm alarm, Context context){

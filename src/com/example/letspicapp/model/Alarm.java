@@ -1,5 +1,6 @@
 package com.example.letspicapp.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.os.Bundle;
@@ -55,8 +56,9 @@ public class Alarm {
 	public String toString() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(time);
+		SimpleDateFormat format1 = new SimpleDateFormat("HH:mm dd-MM-yy");
 		// TODO Auto-generated method stub
-		return name + " - Time: " + time;
+		return name + " - Time: " + format1.format(cal.getTime());
 	}
 	
 	/*******Getter and setter*/

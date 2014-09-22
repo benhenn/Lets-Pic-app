@@ -3,6 +3,7 @@ package com.example.letspicapp;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
 	private boolean fromGallery;
 	private Alarm alarm;
 
+	Calendar time = Calendar.getInstance();
 
 	// /** A safe way to get an instance of the Camera object. */
 	// public static Camera getCameraInstance(){
@@ -56,25 +58,26 @@ public class MainActivity extends Activity {
 	// }
 
 	public Bitmap getBitmap(String path) {
-		Bitmap imgthumBitmap = null;
-		try {
+		try{   //Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(new FileInputStream(path),null,o);
 
-			final int THUMBNAIL_SIZE = 300;
+        //The new size we want to scale to
+        final int REQUIRED_SIZE=100;
 
-			FileInputStream fis = new FileInputStream(path);
-			imgthumBitmap = BitmapFactory.decodeStream(fis);
+        //Find the correct scale value. It should be the power of 2.
+        int scale=1;
+        while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+            scale*=2;
 
-			imgthumBitmap = Bitmap.createScaledBitmap(imgthumBitmap,
-					THUMBNAIL_SIZE, THUMBNAIL_SIZE, false);
+        //Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize=scale;
+        return BitmapFactory.decodeStream(new FileInputStream(path), null, o2);
+    } catch (FileNotFoundException e) {}
+    return null;
 
-			ByteArrayOutputStream bytearroutstream = new ByteArrayOutputStream();
-			imgthumBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
-					bytearroutstream);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return imgthumBitmap;
 	}
 
 	@Override
@@ -132,7 +135,7 @@ public class MainActivity extends Activity {
 	
 	private DatePickerDialog dateTimePicker(final boolean reminder){
 		final Calendar c = Calendar.getInstance();
-		final Calendar time = Calendar.getInstance();
+		
 		
 		final TimePickerDialog tpd = new TimePickerDialog(this,
 	        		new TimePickerDialog.OnTimeSetListener() {
@@ -142,8 +145,12 @@ public class MainActivity extends Activity {
 	        			int minute) {
 	        		time.set(Calendar.HOUR_OF_DAY, hourOfDay);
 	        		time.set(Calendar.MINUTE, minute);
+	        		time.set(Calendar.MILLISECOND, 0);
+	        		time.set(Calendar.SECOND, 0);
+	        		alarm.setTime(time);
 	        		if(reminder)
 	        			scheduleAlarm();
+	        		
 	        	}
 	        }, c.get(Calendar.HOUR_OF_DAY),  c.get(Calendar.MINUTE), true);
 	        
@@ -159,7 +166,8 @@ public class MainActivity extends Activity {
 	        	
 	        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 	      
-	        alarm.setTime(time);
+	       
+	        
 	        return dpd;
 	}
 	

@@ -48,15 +48,24 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.letspicapp.AlarmReciever" />
-        <receiver android:name="com.example.letspicapp.MyWidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
+        <receiver android:name="com.example.letspicapp.receiver.AlarmReciever" />
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
+        <!-- service
+            android:name=".MyService"
+            android:label="My Service" >
+            <intent-filter>
+                <action android:name="com.myapp.MyService" />
+            </intent-filter>
+        </service-->
+
+        <receiver
+            android:name="com.example.letspicapp.receiver.ServiceAtBootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="ServiceAtBootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
 
         <activity
