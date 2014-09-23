@@ -28,7 +28,8 @@ public class Alarm {
 		this.imagePath = imagePath;
 	}
 	
-	public Alarm(long time, String imagePath, String name){
+	public Alarm(long id, long time, String imagePath, String name){
+		this.id = id;
 		this.time = time;
 		this.imagePath = imagePath;
 		this.name = name;
@@ -73,7 +74,6 @@ public class Alarm {
 	
 	
 	public void setId(long id) {
-		if(this.id == 0)
 			this.id = id;
 	}
 

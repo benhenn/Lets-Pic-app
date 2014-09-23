@@ -19,7 +19,7 @@ public class ReminderDataSource {
 	
 	private SQLiteDatabase database;
 	private DatabaseHandler dbHandler;
-	private String[] allColumns = { /* DatabaseHandler.KEY_ID,*/ DatabaseHandler.COLUMN_DATE, DatabaseHandler.COLUM_PATH, DatabaseHandler.COLUM_NAME,  DatabaseHandler.COLUMN_IS_ALARM };
+	private String[] allColumns = { DatabaseHandler.KEY_ID, DatabaseHandler.COLUMN_DATE, DatabaseHandler.COLUM_PATH, DatabaseHandler.COLUM_NAME,  DatabaseHandler.COLUMN_IS_ALARM };
 	
 	 public ReminderDataSource(Context context) {
 		 dbHandler = new DatabaseHandler(context);
@@ -50,7 +50,7 @@ public class ReminderDataSource {
 
 		 cursor.moveToFirst();
 		 while (!cursor.isAfterLast()) {
-			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getString(1),cursor.getString(2));
+			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
 			 alarms.add(alarm);
 			 cursor.moveToNext();
 		 }
@@ -67,7 +67,7 @@ public class ReminderDataSource {
 
 		 cursor.moveToFirst();
 		 while (!cursor.isAfterLast()) {
-			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getString(1),cursor.getString(2));
+			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
 			 alarms.add(alarm);
 			 cursor.moveToNext();
 		 }

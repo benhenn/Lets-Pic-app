@@ -7,6 +7,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.letspicapp.db.ReminderDataSource;
@@ -68,9 +69,10 @@ public class ReminderHandler {
 		// create the object
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-		// set the alarm for particular time
+		Log.d("Test", (int)alarm.getId() + " " + alarm.getId());
+		// set the alarm for particular time TODO (int) id
 		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), PendingIntent
-				.getBroadcast(context, 0, intentAlarm,
+				.getBroadcast(context, (int)alarm.getId(), intentAlarm,
 						PendingIntent.FLAG_UPDATE_CURRENT));
 
 		return true;

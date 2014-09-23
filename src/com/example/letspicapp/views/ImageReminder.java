@@ -62,7 +62,6 @@ public class ImageReminder extends Activity {
 	}
 
 	public Bitmap getBitmap(String path) {
-		Bitmap imgthumBitmap = null;
 		try {
 		       //Decode image size
 	        BitmapFactory.Options o = new BitmapFactory.Options();

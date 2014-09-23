@@ -2,6 +2,7 @@ package com.example.letspicapp.receiver;
 
 import com.example.letspicapp.R;
 import com.example.letspicapp.R.drawable;
+import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.views.ImageReminder;
 
 import android.app.Notification;
@@ -16,6 +17,8 @@ import android.support.v4.app.NotificationCompat;
 
 public class AlarmReciever extends BroadcastReceiver {
 	
+	private static int mNotificationId = 1;
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
@@ -24,26 +27,27 @@ public class AlarmReciever extends BroadcastReceiver {
 				context).setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle("LetsPicApp")
 				.setContentText("Click me")
-				.setDefaults(Notification.DEFAULT_ALL);
+				.setDefaults(Notification.DEFAULT_ALL)
+				.setAutoCancel(true);
 		
 		//forward intent
 		Intent resultIntent = new Intent(context, ImageReminder.class);
 		resultIntent.putExtras(intent);
-
+		
 		// Because clicking the notification opens a new ("special") activity,
 		// there's
 		// no need to create an artificial back stack.
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(context,
-				0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+				(int)intent.getExtras().getLong(Alarm.ID), resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		mBuilder.setContentIntent(resultPendingIntent);
 		// Sets an ID for the notification
-		int mNotificationId = 001;
+//		int mNotificationId = 001;
 		// Gets an instance of the NotificationManager service
 		NotificationManager mNotifyMgr = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		// Builds the notification and issues it.
-		mNotifyMgr.notify(mNotificationId, mBuilder.build());
+		mNotifyMgr.notify(mNotificationId++, mBuilder.build());
 //		WakeLock screenOn = ((PowerManager) context
 //				.getSystemService(Context.POWER_SERVICE)).newWakeLock(
 //				PowerManager.SCREEN_BRIGHT_WAKE_LOCK
