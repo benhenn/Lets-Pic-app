@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -28,11 +29,15 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	private SurfaceHolder surfaceHolder;
 	private Button capture_image, open_gallery, reminderList;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.camera_layout);
+		
+		mUnexpectedTerminationHelper.init();
+		
 		capture_image = (Button) findViewById(R.id.capture_image);
 		capture_image.setOnClickListener(new View.OnClickListener() {
 
@@ -90,8 +95,8 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	// test
 	private static File getOutputMediaFile() {
 		// TODO check that the sdcard is mounted
-		// Environment.getExternalStorageState()
-
+//		 Environment.getExternalStorageState();
+		
 		File mediaStorageDir = Persistence.getInstance().getMediaStorageDir();
 
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -141,6 +146,10 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 
 				Persistence.getInstance().saveData(CameraPreview.this.getApplicationContext(), data, pictureFile);
 
+				releaseCamera();
+				
+				mUnexpectedTerminationHelper.fini();
+				
 				Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_SHORT).show();
 
 				Intent i = new Intent(CameraPreview.this, MainActivity.class);
@@ -148,7 +157,6 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 				i.putExtra("path", pictureFile.getAbsolutePath());
 				i.putExtra("fromGallery", false);
 				startActivity(i);
-				releaseCamera();
 			}
 		});
 	}
@@ -235,6 +243,36 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			mCamera.release();
 			mCamera = null;
 		}
+	}
+	
+	
+	/* class to avoid that in case of an error the camera is still released */
+	
+	private UnexpectedTerminationHelper mUnexpectedTerminationHelper = new UnexpectedTerminationHelper();
+	
+	private class UnexpectedTerminationHelper {
+	    private Thread mThread;
+	    private Thread.UncaughtExceptionHandler mOldUncaughtExceptionHandler = null;
+	    private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
+	        @Override
+	        public void uncaughtException(Thread thread, Throwable ex) { // gets called on the same (main) thread
+	            releaseCamera(); // TODO: write appropriate code here
+	            if(mOldUncaughtExceptionHandler != null) {
+	                // it displays the "force close" dialog
+	                mOldUncaughtExceptionHandler.uncaughtException(thread, ex);
+	            }
+	        }
+	    };
+	    void init() {
+	        mThread = Thread.currentThread();
+	        mOldUncaughtExceptionHandler = mThread.getUncaughtExceptionHandler();
+	        mThread.setUncaughtExceptionHandler(mUncaughtExceptionHandler);
+	    }
+	    void fini() {
+	        mThread.setUncaughtExceptionHandler(mOldUncaughtExceptionHandler);
+	        mOldUncaughtExceptionHandler = null;
+	        mThread = null;
+	    }
 	}
 
 }
