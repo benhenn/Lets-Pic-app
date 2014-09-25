@@ -9,9 +9,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.letspicapp.MainActivity;
 import com.example.letspicapp.R;
-import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.views.ImageReminder;
 
 public class AlarmReciever extends BroadcastReceiver {
@@ -25,21 +23,18 @@ public class AlarmReciever extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d("Here","Intent " + intent.getAction());
 		Intent resultIntent = new Intent(context, ImageReminder.class);
 		resultIntent.putExtras(intent);
 		resultIntent.setAction(Long.toString(System.currentTimeMillis()));
 	    PendingIntent pendingIntent = PendingIntent.getActivity(context, (int)(System.currentTimeMillis()), resultIntent, 0);
 	    
-
 	    NotificationCompat.Builder notification = new NotificationCompat.Builder(
 				context).setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle("LetsPicApp")
 				.setContentText("Click me")
 				.setAutoCancel(true)
-				.setContentIntent(pendingIntent);
-	    
-//	    notification.setLatestEventInfo(context, "Upload", response, pendingIntent);
+				.setContentIntent(pendingIntent)
+				.setDefaults(Notification.DEFAULT_ALL);	    
 
 	    NotificationManager mNotifyMgr = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);

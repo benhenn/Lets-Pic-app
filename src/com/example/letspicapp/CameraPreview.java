@@ -1,17 +1,15 @@
 package com.example.letspicapp;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.hardware.Camera;
-import android.net.Uri;
+import android.hardware.Camera.Parameters;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.letspicapp.db.ReminderDataSource;
 import com.example.letspicapp.technicalservices.Persistence;
 import com.example.letspicapp.views.ReminderOverview;
 
@@ -29,7 +26,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	private Camera mCamera;
 	private SurfaceView surfaceView;
 	private SurfaceHolder surfaceHolder;
-	private Button capture_image,open_gallery,reminderList;
+	private Button capture_image, open_gallery, reminderList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +41,9 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 				capture();
 			}
 		});
-		
+
 		open_gallery = (Button) findViewById(R.id.open_gallery);
-		open_gallery.setOnClickListener(new View.OnClickListener(){
+		open_gallery.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -54,9 +51,9 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			}
 
 		});
-		
+
 		reminderList = (Button) findViewById(R.id.reminder);
-		reminderList.setOnClickListener(new View.OnClickListener(){
+		reminderList.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -64,23 +61,12 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			}
 
 		});
-		
+
 		surfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(CameraPreview.this);
 		surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		try {
-			mCamera = Camera.open();
-			mCamera.setPreviewDisplay(surfaceHolder);
-			mCamera.startPreview();
-			Camera.Parameters p = mCamera.getParameters(); 
-			p.set("orientation", "portrait");
-			p.setRotation(90);
-			
-			mCamera.setParameters(p);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		mCamera = Camera.open();
 	}
 
 	@Override
@@ -98,71 +84,56 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		surfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(CameraPreview.this);
-		try {
-			mCamera = Camera.open();
-			mCamera.setPreviewDisplay(surfaceHolder);
-			mCamera.startPreview();
-			Camera.Parameters p = mCamera.getParameters(); 
-			p.set("orientation", "portrait");
-			p.setRotation(90);
-			mCamera.setParameters(p);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		mCamera = Camera.open();
 	}
 
 	// test
 	private static File getOutputMediaFile() {
-		// To be safe, you should check that the SDCard is mounted
-		// using Environment.getExternalStorageState() before doing this.
+		// TODO check that the sdcard is mounted
+		// Environment.getExternalStorageState()
 
 		File mediaStorageDir = Persistence.getInstance().getMediaStorageDir();
 
-		// Create a media file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-				.format(new Date());
-		File mediaFile = new File(mediaStorageDir.getPath() + File.separator
-				+ "IMG_" + timeStamp + ".jpg");
-		Log.d(TAG, mediaStorageDir.getPath() + File.separator
-				+ "IMG_" + timeStamp + ".jpg");
-		
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		File mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+		Log.d(TAG, mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+
 		return mediaFile;
 	}
-	
+
 	private void select() {
 		Intent intent = new Intent();
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
 	}
-	
-	private void openReminderList(){
+
+	private void openReminderList() {
 		Intent i = new Intent(this, ReminderOverview.class);
 		startActivity(i);
 	}
-	
+
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) { 
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-	        if (resultCode == RESULT_OK) {
+		if (resultCode == RESULT_OK) {
 
-	                if (requestCode == PICK_IMAGE) {
+			if (requestCode == PICK_IMAGE) {
 
-	                        File pictureFile = new File(Persistence.getInstance().getRealPathFromURI(data.getData(),this));
-	                        Intent i = new Intent(CameraPreview.this,MainActivity.class);
-	        				i.putExtra("name", pictureFile.getName());
-	        				i.putExtra("path", pictureFile.getAbsolutePath());
-	        				i.putExtra("fromGallery", true);//TODO workaround
-	        				startActivity(i);
-	        				releaseCamera();
-	                }
-	        }
+				File pictureFile = new File(Persistence.getInstance().getRealPathFromURI(data.getData(), this));
+				Intent i = new Intent(CameraPreview.this, MainActivity.class);
+				i.putExtra("name", pictureFile.getName());
+				i.putExtra("path", pictureFile.getAbsolutePath());
+				i.putExtra("fromGallery", true);// TODO workaround
+				startActivity(i);
+				releaseCamera();
+			}
+		}
 	}
-	
+
 	private void capture() {
 		mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
 
-			
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
 				mCamera.stopPreview();
@@ -170,10 +141,9 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 
 				Persistence.getInstance().saveData(CameraPreview.this.getApplicationContext(), data, pictureFile);
 
-				Toast.makeText(getApplicationContext(), "Picture Taken",
-						Toast.LENGTH_SHORT).show();
-				
-				Intent i = new Intent(CameraPreview.this,MainActivity.class);
+				Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_SHORT).show();
+
+				Intent i = new Intent(CameraPreview.this, MainActivity.class);
 				i.putExtra("name", pictureFile.getName());
 				i.putExtra("path", pictureFile.getAbsolutePath());
 				i.putExtra("fromGallery", false);
@@ -184,21 +154,68 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		Log.d("Surface Changed", "format   ==   " + format + ",   width  ===  "
-				+ width + ", height   ===    " + height);
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		Log.d("Surface Changed", "format   ==   " + format + ",   width  ===  " + width + ", height   ===    " + height);
 		try {
-			mCamera.setPreviewDisplay(holder);
+			Parameters parameters = mCamera.getParameters();
+			List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+			List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes(); // picture size must have same ratio
+
+			Camera.Size previewSize = getOptimalPreviewSize(previewSizes, height, width);
+
+			parameters.setPreviewSize(previewSize.width, previewSize.height);
+			parameters.setPictureSize(pictureSizes.get(1).width, pictureSizes.get(1).height);
+			parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+			parameters.setRotation(90);
+			mCamera.setParameters(parameters);
+
 			mCamera.startPreview();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Override
+	private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+		final double ASPECT_TOLERANCE = 0.1;
+		double targetRatio = (double) h / w;
+
+		if (sizes == null)
+			return null;
+
+		Camera.Size optimalSize = null;
+		double minDiff = Double.MAX_VALUE;
+
+		int targetHeight = h;
+
+		for (Camera.Size size : sizes) {
+			double ratio = (double) size.width / size.height;
+			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+				continue;
+			if (Math.abs(size.height - targetHeight) < minDiff) {
+				optimalSize = size;
+				minDiff = Math.abs(size.height - targetHeight);
+			}
+		}
+
+		if (optimalSize == null) {
+			minDiff = Double.MAX_VALUE;
+			for (Camera.Size size : sizes) {
+				if (Math.abs(size.height - targetHeight) < minDiff) {
+					optimalSize = size;
+					minDiff = Math.abs(size.height - targetHeight);
+				}
+			}
+		}
+		return optimalSize;
+	}
+
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.e("Surface Created", "");
+		try {
+			mCamera.setPreviewDisplay(surfaceHolder);
+			mCamera.setDisplayOrientation(90);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

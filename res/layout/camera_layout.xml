@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -7,35 +7,39 @@
     <SurfaceView
         android:id="@+id/surfaceview"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_weight="100" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/capture_image"
+            android:id="@+id/reminder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Capture" />
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/capture_image"
+            android:text="Reminders" />
 
         <Button
             android:id="@+id/open_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/capture_image"
             android:text="Gallery" />
 
         <Button
-            android:id="@+id/reminder"
+            android:id="@+id/capture_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reminders" />
-        
-    </LinearLayout>
+            android:layout_centerHorizontal="true"
+ android:layout_alignParentBottom="true"
+ 
+            android:text="Capture" />
 
-</LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout>
