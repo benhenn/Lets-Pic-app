@@ -34,6 +34,7 @@ public class ReminderDataSource {
 	 }
 	 
 	 public void createReminder(Alarm alarm){
+		 this.open();
 		 ContentValues values = new ContentValues();
 		 values.put(DatabaseHandler.COLUMN_DATE, alarm.getTime());
 		 values.put(DatabaseHandler.COLUM_PATH, alarm.getImagePath());
@@ -41,13 +42,15 @@ public class ReminderDataSource {
 		 values.put(DatabaseHandler.COLUMN_IS_ALARM, 1);
 		 long id = database.insert(DatabaseHandler.TABLE_REMINDER, null, values);
 		 alarm.setId(id);
+		 this.close();
 	 }
 	 
 	 public List<Alarm> getAllReminders(){
+
+		 this.open();
 		 List<Alarm> alarms = new ArrayList<Alarm>();
 		 Cursor cursor = database.query(DatabaseHandler.TABLE_REMINDER,
 				 allColumns , null , null, null, null, null);
-
 		 cursor.moveToFirst();
 		 while (!cursor.isAfterLast()) {
 			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
@@ -55,16 +58,17 @@ public class ReminderDataSource {
 			 cursor.moveToNext();
 		 }
 		 cursor.close();
+		 this.close();
 		 return alarms;
 	 }
 	 
 	 public List<Alarm> getAllAlarms(){
 //		 createReminder(new Alarm(Calendar.getInstance(),"HelloWorld"));
+		 this.open();
 		 List<Alarm> alarms = new ArrayList<Alarm>();
 		 String whereClause = DatabaseHandler.COLUMN_IS_ALARM + " = 1";
 		 Cursor cursor = database.query(DatabaseHandler.TABLE_REMINDER,
 				 allColumns , null , null, null, null, null);
-
 		 cursor.moveToFirst();
 		 while (!cursor.isAfterLast()) {
 			 Alarm alarm = new Alarm(cursor.getLong(0),cursor.getLong(1),cursor.getString(2),cursor.getString(3));
@@ -72,6 +76,7 @@ public class ReminderDataSource {
 			 cursor.moveToNext();
 		 }
 		 cursor.close();
+		 this.close();
 		 return alarms;
 	}
 
@@ -79,10 +84,10 @@ public class ReminderDataSource {
 		 ContentValues values = new ContentValues();
 		 values.put(DatabaseHandler.COLUM_PATH, alarm.getId());
 		 values.put(DatabaseHandler.COLUMN_DATE, alarm.getTime());
-		
+		 this.open();
 		 database.update(DatabaseHandler.TABLE_REMINDER,
 				 values, DatabaseHandler.KEY_ID + " = " + alarm.getId(), null);
-		 
+		 this.close();
 		 return  1;
 		 
 	 }

@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="14" />
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -48,15 +48,15 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.letspicapp.receiver.AlarmReciever" />
+        <receiver
+            android:name="com.example.letspicapp.receiver.AlarmReciever"
+             />
 
-        <!-- service
-            android:name=".MyService"
-            android:label="My Service" >
-            <intent-filter>
-                <action android:name="com.myapp.MyService" />
-            </intent-filter>
-        </service-->
+        <service
+            android:name="com.example.letspicapp.receiver.RestoreReminders"
+            android:icon="@drawable/ic_launcher"
+            android:label="LetsPicAppService" >
+        </service>
 
         <receiver
             android:name="com.example.letspicapp.receiver.ServiceAtBootReceiver"
@@ -70,7 +70,8 @@
 
         <activity
             android:name="com.example.letspicapp.views.ImageReminder"
-            android:label="@string/title_activity_image_reminder" >
+            android:label="@string/title_activity_image_reminder"
+            >
         </activity>
         <activity
             android:name="com.example.letspicapp.views.ReminderOverview"

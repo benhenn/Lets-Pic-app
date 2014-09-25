@@ -192,6 +192,8 @@ public class MainActivity extends Activity {
 			Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
 			.show();
 		}
+		Intent camera  = new Intent(this, CameraPreview.class);
+		startActivity(camera);
 
 	}
 }

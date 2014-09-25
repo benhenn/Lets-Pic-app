@@ -186,8 +186,8 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-//		Log.e("Surface Changed", "format   ==   " + format + ",   width  ===  "
-//				+ width + ", height   ===    " + height);
+		Log.d("Surface Changed", "format   ==   " + format + ",   width  ===  "
+				+ width + ", height   ===    " + height);
 		try {
 			mCamera.setPreviewDisplay(holder);
 			mCamera.startPreview();

@@ -13,7 +13,10 @@ public class ServiceAtBootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
     	
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-           ReminderHandler.getInstance().setAllRemindersAfterReboot(context);
+//           ReminderHandler.getInstance().setAllRemindersAfterReboot(context);
+        	 Log.d("Test","Start boot complete service" );
+        	 Intent i = new Intent(context,RestoreReminders.class);
+        	 context.startService(i);
         }
     }
 }

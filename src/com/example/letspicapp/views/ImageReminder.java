@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +43,9 @@ public class ImageReminder extends Activity {
 		alarm = new Alarm(getIntent().getExtras());
 		
 		setContentView(R.layout.activity_image_reminder);		 
+		
+		Log.d("ImageReminder", "Image Path: " + alarm.getImagePath());
+		
 		
 		ImageView iV = (ImageView) findViewById(R.id.imageView42);
 		iV.setImageBitmap(getBitmap(alarm.getImagePath()));

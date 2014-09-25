@@ -30,7 +30,6 @@ public class ReminderOverview extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reminder_overview);
 	    datasource = new ReminderDataSource(this);
-	    datasource.open();
 	    display();
 	    ListView lv = getListView();
 	    lv.setOnItemClickListener(new OnItemClickListener() {
@@ -54,13 +53,14 @@ public class ReminderOverview extends ListActivity {
 	    
 	}
 
-	public void test(View view) {
-		display();
-	}
+//	public void test(View view) {
+//		display();
+//	}
 	
 	private void display(){
 		RadioGroup rg = (RadioGroup) findViewById(R.id.displayReminders);
 		
+		datasource.open();
 		switch (rg.getCheckedRadioButtonId()) {
 			default:
 			case R.id.displayAllReminders:
@@ -75,6 +75,8 @@ public class ReminderOverview extends ListActivity {
 				alarms = new ArrayList<Alarm>();
 				break;
 		}
+		datasource.close();
+
 		ArrayAdapter<Alarm> adapter = new ArrayAdapter<Alarm>(this,
 		        android.R.layout.simple_list_item_1, alarms);
 		setListAdapter(adapter);

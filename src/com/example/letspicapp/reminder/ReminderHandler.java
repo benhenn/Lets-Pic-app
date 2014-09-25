@@ -8,8 +8,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.example.letspicapp.MainActivity;
 import com.example.letspicapp.db.ReminderDataSource;
 import com.example.letspicapp.model.Alarm;
 import com.example.letspicapp.receiver.AlarmReciever;
@@ -35,9 +35,7 @@ public class ReminderHandler {
 
 		//save it to the db
 		ReminderDataSource dataSource = new ReminderDataSource(context);
-		dataSource.open();
 		dataSource.createReminder(alarm);
-		dataSource.close();
 		
 		return setAlarm(alarm,context);
 	}
@@ -45,14 +43,14 @@ public class ReminderHandler {
 	public void setAllRemindersAfterReboot(Context context) {
 		
 		ReminderDataSource dataSource = new ReminderDataSource(context);
-		dataSource.open();
 		List<Alarm> alarms = dataSource.getAllReminders();
 		long time = Calendar.getInstance().getTimeInMillis();
 		for (Alarm alarm : alarms) {
-			if(time < alarm.getTime())
+			if(time < alarm.getTime()){
+				Log.d("ReminderHandler", "Created " + alarm.getId() + " " + alarm.toString());
 				setAlarm(alarm, context);
+			}
 		}
-		dataSource.close();
 
 	}
 	
@@ -65,15 +63,14 @@ public class ReminderHandler {
 //		intentAlarm.putExtra(, alarm.getImagePath());
 //		intentAlarm.putExtra("time", alarm.getTime());
 		intentAlarm.putExtras(alarm.toBundle());
-		
+//		intentAlarm.setAction(Long.toString(System.currentTimeMillis()));
 		// create the object
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-		Log.d("Test", (int)alarm.getId() + " " + alarm.getId());
+		Log.d("Test", (int)alarm.getId() + " " + alarm.getId() + " " + context.toString());
 		// set the alarm for particular time TODO (int) id
-		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), PendingIntent
-				.getBroadcast(context, (int)alarm.getId(), intentAlarm,
-						PendingIntent.FLAG_UPDATE_CURRENT));
+		PendingIntent pintent = PendingIntent.getBroadcast(context, (int) System.currentTimeMillis(), intentAlarm, 0);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.getTime(), pintent );
 
 		return true;
 	}

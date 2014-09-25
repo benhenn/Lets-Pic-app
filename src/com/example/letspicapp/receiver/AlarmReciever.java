@@ -1,54 +1,88 @@
 package com.example.letspicapp.receiver;
 
-import com.example.letspicapp.R;
-import com.example.letspicapp.R.drawable;
-import com.example.letspicapp.model.Alarm;
-import com.example.letspicapp.views.ImageReminder;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import com.example.letspicapp.MainActivity;
+import com.example.letspicapp.R;
+import com.example.letspicapp.model.Alarm;
+import com.example.letspicapp.views.ImageReminder;
 
 public class AlarmReciever extends BroadcastReceiver {
 	
-	private static int mNotificationId = 1;
+	static int notId = 1;
+	
+	private static synchronized int getNotId(){
+		Log.d("AlarmReceiver","notification id " + notId);
+		return notId++;
+	}
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		
-		//build the notification
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+		Log.d("Here","Intent " + intent.getAction());
+		Intent resultIntent = new Intent(context, ImageReminder.class);
+		resultIntent.putExtras(intent);
+		resultIntent.setAction(Long.toString(System.currentTimeMillis()));
+	    PendingIntent pendingIntent = PendingIntent.getActivity(context, (int)(System.currentTimeMillis()), resultIntent, 0);
+	    
+
+	    NotificationCompat.Builder notification = new NotificationCompat.Builder(
 				context).setSmallIcon(R.drawable.ic_launcher)
 				.setContentTitle("LetsPicApp")
 				.setContentText("Click me")
-				.setDefaults(Notification.DEFAULT_ALL)
-				.setAutoCancel(true);
-		
-		//forward intent
-		Intent resultIntent = new Intent(context, ImageReminder.class);
-		resultIntent.putExtras(intent);
-		
-		// Because clicking the notification opens a new ("special") activity,
-		// there's
-		// no need to create an artificial back stack.
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(context,
-				(int)intent.getExtras().getLong(Alarm.ID), resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+				.setAutoCancel(true)
+				.setContentIntent(pendingIntent);
+	    
+//	    notification.setLatestEventInfo(context, "Upload", response, pendingIntent);
 
-		mBuilder.setContentIntent(resultPendingIntent);
-		// Sets an ID for the notification
-//		int mNotificationId = 001;
-		// Gets an instance of the NotificationManager service
-		NotificationManager mNotifyMgr = (NotificationManager) context
+	    NotificationManager mNotifyMgr = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		// Builds the notification and issues it.
-		mNotifyMgr.notify(mNotificationId++, mBuilder.build());
-//		WakeLock screenOn = ((PowerManager) context
+	    
+	    mNotifyMgr.notify(getNotId(), notification.build());
+		
+		
+		
+		
+//		//build the notification
+//		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+//				context).setSmallIcon(R.drawable.ic_launcher)
+//				.setContentTitle("LetsPicApp")
+//				.setContentText("Click me")
+//				.setDefaults(Notification.DEFAULT_ALL)
+//				.setAutoCancel(true);
+//		
+//		//forward intent
+//		Intent resultIntent = new Intent(context, ImageReminder.class);
+//		resultIntent.putExtras(intent);
+//		int intentId = getNotId();
+//		resultIntent.putExtra("intentId", intentId);
+//		resultIntent.setAction(Long.toString(System.currentTimeMillis()));
+//		resultIntent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//		resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		Log.d("AlarmReceiver", "Alarm ID " + intentId + new Alarm(intent.getExtras()).toString());
+//		
+//		// Because clicking the notification opens a new ("special") activity,
+//		// there's
+//		// no need to create an artificial back stack.
+//		PendingIntent resultPendingIntent = PendingIntent.getActivity(context, intentId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//		
+//		mBuilder.setContentIntent(resultPendingIntent);
+//		// Sets an ID for the notification
+////		int mNotificationId = 001;
+//		// Gets an instance of the NotificationManager service
+//		NotificationManager mNotifyMgr = (NotificationManager) context
+//				.getSystemService(Context.NOTIFICATION_SERVICE);
+//		// Builds the notification and issues it.
+//		mNotifyMgr.notify(intentId, mBuilder.build());
+//		Log.d("AlarmReceiver", "Intent ID" +resultIntent.getExtras().getInt("intentId"));
+////		WakeLock screenOn = ((PowerManager) context
 //				.getSystemService(Context.POWER_SERVICE)).newWakeLock(
 //				PowerManager.SCREEN_BRIGHT_WAKE_LOCK
 //						| PowerManager.ACQUIRE_CAUSES_WAKEUP, "example");
