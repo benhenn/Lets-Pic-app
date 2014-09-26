@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
         BitmapFactory.decodeStream(new FileInputStream(path),null,o);
 
         //The new size we want to scale to
-        final int REQUIRED_SIZE=100;
+        final int REQUIRED_SIZE=150;
 
         //Find the correct scale value. It should be the power of 2.
         int scale=1;
@@ -78,6 +78,11 @@ public class MainActivity extends Activity {
     } catch (FileNotFoundException e) {}
     return null;
 
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
 	}
 
 	@Override
