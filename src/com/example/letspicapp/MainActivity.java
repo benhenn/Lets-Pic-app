@@ -3,14 +3,12 @@ package com.example.letspicapp;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.letspicapp.model.Alarm;
+import com.example.letspicapp.reminder.ReminderHandler;
 import com.example.letspicapp.technicalservices.Persistence;
 
 public class MainActivity extends Activity {
@@ -38,8 +38,11 @@ public class MainActivity extends Activity {
 	private String path;
 	private String name;
 	private int mYear, mMonth, mDay, mHour, mMinute;
-	private Calendar alarm = Calendar.getInstance();
+//	private Calendar alarm = Calendar.getInstance();
 	private boolean fromGallery;
+	private Alarm alarm;
+
+	Calendar time = Calendar.getInstance();
 
 	// /** A safe way to get an instance of the Camera object. */
 	// public static Camera getCameraInstance(){
@@ -55,32 +58,35 @@ public class MainActivity extends Activity {
 	// }
 
 	public Bitmap getBitmap(String path) {
-		Bitmap imgthumBitmap = null;
-		try {
+		try{   //Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(new FileInputStream(path),null,o);
 
-			final int THUMBNAIL_SIZE = 300;
+        //The new size we want to scale to
+        final int REQUIRED_SIZE=100;
 
-			FileInputStream fis = new FileInputStream(path);
-			imgthumBitmap = BitmapFactory.decodeStream(fis);
+        //Find the correct scale value. It should be the power of 2.
+        int scale=1;
+        while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+            scale*=2;
 
-			imgthumBitmap = Bitmap.createScaledBitmap(imgthumBitmap,
-					THUMBNAIL_SIZE, THUMBNAIL_SIZE, false);
+        //Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize=scale;
+        return BitmapFactory.decodeStream(new FileInputStream(path), null, o2);
+    } catch (FileNotFoundException e) {}
+    return null;
 
-			ByteArrayOutputStream bytearroutstream = new ByteArrayOutputStream();
-			imgthumBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
-					bytearroutstream);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return imgthumBitmap;
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		Intent i = getIntent();
+		alarm = new Alarm();
 		
 		//share menu
 		if (Intent.ACTION_SEND.equals(i.getAction())) {   
@@ -90,22 +96,24 @@ public class MainActivity extends Activity {
 		    File pictureFile = new File(Persistence.getInstance().getRealPathFromURI(uri,this));
 		    
 		    if (pictureFile != null) {
-		    	name = pictureFile.getName();
-		    	path = pictureFile.getAbsolutePath();
+		    	alarm.setName(pictureFile.getName());
+		    	alarm.setPath(pictureFile.getAbsolutePath());
 		    	fromGallery = true;
 		    }
 		  }
+//		}else if(i.getBooleanExtra("Overview", false)){
+			
 		}else{ 
-			name = i.getExtras().getString("name");
-			path = i.getExtras().getString("path");
+			alarm.setName(i.getExtras().getString("name"));
+			alarm.setPath(i.getExtras().getString("path"));
 			fromGallery = i.getExtras().getBoolean("fromGallery");//TODO workaround
 		}
 		
 		EditText text = (EditText) findViewById(R.id.editName);
-		text.setText(Persistence.removeImageFileExtension(name));
+		text.setText(Persistence.removeImageFileExtension(alarm.getName()));
 		text.setSelection(text.getText().length());
 		ImageView mImageView = (ImageView) findViewById(R.id.thumbnail);
-		mImageView.setImageBitmap(getBitmap(path));
+		mImageView.setImageBitmap(getBitmap(alarm.getImagePath()));
 	}
 	
 	private void setName(String name){
@@ -120,76 +128,72 @@ public class MainActivity extends Activity {
 		EditText editText = (EditText) findViewById(R.id.editName);
 		newName = editText.getText().toString();
 		Log.d("LetsPicAppDebug", "EditText: " + newName);
-		newPath = Persistence.getInstance().renameImage(this.getApplicationContext(),name, newName);
-		this.setName(newName);
-		this.setPath(newPath);
+		newPath = Persistence.getInstance().renameImage(this.getApplicationContext(),alarm.getName(), newName);
+		alarm.setName(newName);
+		alarm.setPath(newPath);
 	}
 	
-	private void setAlarmTime(int hour,int minute){
-		alarm.set(Calendar.HOUR_OF_DAY, hour);
-		alarm.set(Calendar.MINUTE, minute);
-	}
-	
-	private void setAlarmDate(int year,int month, int day){
-		alarm.set(Calendar.YEAR, year);
-		alarm.set(Calendar.MONTH, month);
-		alarm.set(Calendar.DAY_OF_MONTH, day);
+	private DatePickerDialog dateTimePicker(final boolean reminder){
+		final Calendar c = Calendar.getInstance();
+		
+		
+		final TimePickerDialog tpd = new TimePickerDialog(this,
+	        		new TimePickerDialog.OnTimeSetListener() {
+	        	
+	        	@Override
+	        	public void onTimeSet(TimePicker view, int hourOfDay,
+	        			int minute) {
+	        		time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+	        		time.set(Calendar.MINUTE, minute);
+	        		time.set(Calendar.MILLISECOND, 0);
+	        		time.set(Calendar.SECOND, 0);
+	        		alarm.setTime(time);
+	        		if(reminder)
+	        			scheduleAlarm();
+	        		
+	        	}
+	        }, c.get(Calendar.HOUR_OF_DAY),  c.get(Calendar.MINUTE), true);
+	        
+	        final DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener(){
+
+				@Override
+				public void onDateSet(DatePicker view,  int year, int monthOfYear, int dayOfMonth) {
+					time.set(Calendar.YEAR, year);
+					time.set(Calendar.MONTH, monthOfYear);
+					time.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+					tpd.show();
+				}
+	        	
+	        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+	      
+	       
+	        
+	        return dpd;
 	}
 	
 	public void reminder(View v){
 		if(!fromGallery) //TODO workaround
 			this.rename();
-		
-		int alarmHour,alarmMinute,alarmYear,alarmMonth,alarmDay;
-		
-		final Calendar c = Calendar.getInstance();
-        
-        final TimePickerDialog tpd = new TimePickerDialog(this,
-        		new TimePickerDialog.OnTimeSetListener() {
-        	
-        	@Override
-        	public void onTimeSet(TimePicker view, int hourOfDay,
-        			int minute) {
-        		setAlarmTime(hourOfDay, minute);
-        		scheduleAlarm();
-        	}
-        }, c.get(Calendar.HOUR_OF_DAY),  c.get(Calendar.MINUTE), true);
-        
-        final DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener(){
-
-			@Override
-			public void onDateSet(DatePicker view,  int year, int monthOfYear, int dayOfMonth) {
-				setAlarmDate(year, monthOfYear, dayOfMonth);
-				tpd.show();
-			}
-        	
-        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-        
-        dpd.show();
+//		alarm = new Alarm();
+        dateTimePicker(true).show();
 	}
 	
 	public void deletePicture(View v){
 		this.rename();
-		boolean t = Persistence.getInstance().deleteImage(this.getApplicationContext(), this.name);
+		boolean t = Persistence.getInstance().deleteImage(this.getApplicationContext(), alarm.getName());
 		Log.d("LetsPicAppDebug", "Deletion: " + t);
 	}
 	
-	public void scheduleAlarm() {
-
-		Long time = alarm.getTimeInMillis();
-		Intent intentAlarm = new Intent(this, AlarmReciever.class);
-		Log.d("LetsPicAppDebug", "New Path: " + path);
-		intentAlarm.putExtra("path", path);
-
-		// create the object
-		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-		// set the alarm for particular time
-		alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent
-				.getBroadcast(this, 0, intentAlarm,
-						PendingIntent.FLAG_UPDATE_CURRENT));
+	public void scheduleAlarm() {		
+		boolean alarmSet;
+		alarmSet = ReminderHandler.getInstance().scheduleAlarm(alarm, this);
 		
-		Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
-				.show();
+		if(alarmSet){
+			Toast.makeText(this, "Alarm Scheduled", Toast.LENGTH_LONG)
+			.show();
+		}
+		Intent camera  = new Intent(this, CameraPreview.class);
+		startActivity(camera);
+
 	}
 }

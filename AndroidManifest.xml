@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="14" />
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -28,7 +28,7 @@
         <activity
             android:name="com.example.letspicapp.CameraPreview"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,20 +48,34 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.example.letspicapp.AlarmReciever" />
-        <receiver android:name="com.example.letspicapp.MyWidgetProvider" >
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
+        <receiver
+            android:name="com.example.letspicapp.receiver.AlarmReciever"
+             />
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
+        <service
+            android:name="com.example.letspicapp.receiver.RestoreReminders"
+            android:icon="@drawable/ic_launcher"
+            android:label="LetsPicAppService" >
+        </service>
+
+        <receiver
+            android:name="com.example.letspicapp.receiver.ServiceAtBootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="ServiceAtBootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
 
         <activity
-            android:name="com.example.letspicapp.ImageReminder"
-            android:label="@string/title_activity_image_reminder" >
+            android:name="com.example.letspicapp.views.ImageReminder"
+            android:label="@string/title_activity_image_reminder"
+            >
+        </activity>
+        <activity
+            android:name="com.example.letspicapp.views.ReminderOverview"
+            android:label="@string/title_activity_reminder_overview" >
         </activity>
     </application>
 
