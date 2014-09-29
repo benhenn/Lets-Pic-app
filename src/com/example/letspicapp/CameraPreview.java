@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -24,7 +23,7 @@ import com.example.letspicapp.views.ReminderOverview;
 public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	private final static String TAG = "LetsPicAppDebug";
 	private static final int PICK_IMAGE = 1;
-	private Camera mCamera;
+	private Camera mCamera = null;
 	private SurfaceView surfaceView;
 	private SurfaceHolder surfaceHolder;
 	private Button capture_image, open_gallery, reminderList;
@@ -35,8 +34,6 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.camera_layout);
-		
-		mUnexpectedTerminationHelper.init();
 		
 		capture_image = (Button) findViewById(R.id.capture_image);
 		capture_image.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +68,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(CameraPreview.this);
 		surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		mCamera = Camera.open();
+		openCamera();
 	}
 
 	@Override
@@ -89,7 +86,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		surfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(CameraPreview.this);
-		mCamera = Camera.open();
+		openCamera();
 	}
 
 	// test
@@ -143,15 +140,11 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 			public void onPictureTaken(byte[] data, Camera camera) {
 				mCamera.stopPreview();
 				File pictureFile = getOutputMediaFile();
-
 				Persistence.getInstance().saveData(CameraPreview.this.getApplicationContext(), data, pictureFile);
-
 				releaseCamera();
-				
-				mUnexpectedTerminationHelper.fini();
-				
-				Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_SHORT).show();
 
+				Toast.makeText(getApplicationContext(), "Picture Taken", Toast.LENGTH_SHORT).show();
+				
 				Intent i = new Intent(CameraPreview.this, MainActivity.class);
 				i.putExtra("name", pictureFile.getName());
 				i.putExtra("path", pictureFile.getAbsolutePath());
@@ -233,8 +226,9 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	public void onPause() {
+		
 		super.onPause();
-		// mCamera.stopPreview();
+//		mCamera.stopPreview();
 		releaseCamera();
 	}
 
@@ -242,6 +236,14 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 		if (mCamera != null) {
 			mCamera.release();
 			mCamera = null;
+			mUnexpectedTerminationHelper.fini();
+		}
+	}
+	
+	private void openCamera() {
+		if (mCamera == null) {
+			mUnexpectedTerminationHelper.init();
+			mCamera = Camera.open();
 		}
 	}
 	
@@ -258,6 +260,7 @@ public class CameraPreview extends Activity implements SurfaceHolder.Callback {
 	        public void uncaughtException(Thread thread, Throwable ex) { // gets called on the same (main) thread
 	            releaseCamera(); // TODO: write appropriate code here
 	            if(mOldUncaughtExceptionHandler != null) {
+//	            	Log.e("UnexpectedTerminationHelper", ex.printStackTrace());
 	                // it displays the "force close" dialog
 	                mOldUncaughtExceptionHandler.uncaughtException(thread, ex);
 	            }

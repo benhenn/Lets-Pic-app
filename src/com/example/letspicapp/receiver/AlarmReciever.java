@@ -34,7 +34,7 @@ public class AlarmReciever extends BroadcastReceiver {
 				.setContentText("Click me")
 				.setAutoCancel(true)
 				.setContentIntent(pendingIntent)
-				.setDefaults(Notification.DEFAULT_ALL);	    
+				.setVibrate(new long[]{0,1000,300,1000});	    
 
 	    NotificationManager mNotifyMgr = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
